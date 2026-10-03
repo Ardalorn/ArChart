@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#17261f">
+
+<title>ArChart: medicine dose chart</title>
+<meta name="description" content="Plan and log your medicine doses against the limits you set, and keep your data on your own device.">
+<meta property="og:title" content="ArChart: medicine dose chart">
+<meta property="og:description" content="Plan and log your medicine doses against the limits you set, and keep your data on your own device.">
+<meta property="og:type" content="website">
+<!-- Add og:url, og:image and a canonical link once you have absolute URLs. -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+<header>
+<h1>ArChart</h1>
+<nav aria-label="Sections"><ul role="list">
+<li><a href="#chart">Day</a></li><li><a href="#meds">Medicines</a></li><li><a href="#plan">Plan</a></li><li><a href="#backup">Backup</a></li><li><a href="#glossary">Glossary</a></li>
+</ul></nav>
+</header>
+<noscript><p class="err">ArChart needs JavaScript. Turn it on in your browser settings, then reload this page.</p></noscript>
+<main id="main" tabindex="-1">
+<section id="chart" aria-labelledby="hc">
+<h2 id="hc">Day</h2>
+<div class="row">
+<button type="button" class="alt" id="prev" aria-label="Previous day">&larr;</button>
+<div><label for="day">Day</label><input type="date" id="day"></div>
+<button type="button" class="alt" id="next" aria-label="Next day">&rarr;</button>
+<button type="button" class="alt" id="today">Today</button>
+</div>
+<p id="day-long"></p>
+<p>A <abbr title="Portable Document Format">PDF</abbr> is a file you can print or share. An <abbr title="iCalendar">ICS</abbr> file adds your doses to a calendar app. The <a href="#glossary">glossary</a> explains other terms.</p>
+<div class="row" role="group" aria-label="Save this chart">
+<button type="button" id="pdf">Download PDF chart</button>
+<button type="button" id="ics">Download calendar file (ICS)</button>
+</div>
+<p id="range"></p>
+<p id="msg" class="msg" role="alert"></p>
+<ol id="doses" role="list"></ol>
+<form id="extra" class="card" novalidate>
+<h3>Log a dose taken outside the schedule</h3>
+<div class="row">
+<div><label for="x-med">Medicine</label><select id="x-med"></select></div>
+<div><label for="x-time">Time taken</label><input type="time" id="x-time" autocomplete="off"></div>
+<button type="button" class="alt" id="x-now">Use current time</button>
+<button type="submit">Log dose</button>
+</div>
+<p id="x-msg" class="msg" role="alert"></p>
+</form>
+</section>
+
+<!-- Overview is hidden for now. To show it again: remove the hidden attribute below and add the nav link back. -->
+<section id="overview" aria-labelledby="ho" hidden>
+<h2 id="ho">Overview</h2>
+<div class="row">
+<div><label for="ov-days">Days from the selected day</label>
+<select id="ov-days"><option value="7">7</option><option value="14">14</option><option value="28">28</option></select></div>
+<button type="button" id="print-ov">Print overview</button>
+</div>
+<div class="scroll"><table id="ov"></table></div>
+</section>
+
+<section id="meds" aria-labelledby="hm">
+<h2 id="hm" tabindex="-1">Medicines</h2>
+<p id="m-msg" class="msg" role="alert"></p>
+<ul id="medlist" class="plain" role="list"></ul>
+<form id="add" class="card" novalidate>
+<h3>Medicine details</h3>
+<label for="f-name">Name (required)</label><input id="f-name" autocomplete="off" aria-required="true">
+<div class="row">
+<div><label for="f-str">Strength (for example 500 or 2.5)</label><input id="f-str" inputmode="decimal" autocomplete="off"></div>
+<div><label for="f-unit">Unit (for example mg, which means milligrams)</label><input id="f-unit" autocomplete="off"></div>
+<div><label for="f-units">Units per dose</label><input id="f-units" value="1" inputmode="decimal" autocomplete="off"></div>
+</div>
+<div class="row">
+<div><label for="f-max">Max doses per 24 hours</label><input id="f-max" inputmode="numeric" autocomplete="off"></div>
+<div><label for="f-maxtotal">Max total per 24 hours (in strength units)</label><input id="f-maxtotal" inputmode="decimal" autocomplete="off"></div>
+</div>
+<label for="f-mode">Schedule</label>
+<select id="f-mode">
+<option value="manual">As needed (log when taken)</option>
+<option value="regular">Regular (planned doses)</option>
+</select>
+<p id="f-hint" hidden>Fill in either box, or both. Leave one blank and it is calculated from the other.</p>
+<div class="row">
+<div><label for="f-hours" id="l-hours">Hours between doses (for example 3.5)</label><input id="f-hours" inputmode="decimal" autocomplete="off" aria-describedby="f-hint"></div>
+<div id="w-perday" hidden><label for="f-perday">Doses over 24 hours</label><input id="f-perday" inputmode="numeric" autocomplete="off" aria-describedby="f-hint"></div>
+</div>
+<p id="f-sum" role="status"></p>
+<label for="f-notes">Notes from the prescriber or pharmacist</label><input id="f-notes" autocomplete="off">
+<p id="err" class="msg err" role="alert"></p>
+<div class="row"><button type="submit" id="f-submit">Add medicine</button><button type="button" class="alt" id="f-cancel" hidden>Cancel edit</button></div>
+</form>
+</section>
+
+<section id="plan" aria-labelledby="hp">
+<h2 id="hp">Plan</h2>
+<p>Choose when your plan starts and how long it runs.</p>
+<div class="card">
+<div class="row">
+<div><label for="p-start">Start</label><input type="datetime-local" id="p-start"></div>
+<button type="button" class="alt" id="p-now">Start now</button>
+</div>
+<div class="row">
+<div id="w-n"><label for="p-n">Length</label><input id="p-n" inputmode="numeric" autocomplete="off"></div>
+<div><label for="p-unit">Unit</label>
+<select id="p-unit"><option value="days">Days</option><option value="months">Months</option><option value="years">Years</option><option value="forever">Forever</option></select></div>
+</div>
+</div>
+<p id="p-msg" class="msg" role="alert"></p>
+</section>
+
+<section id="backup" aria-labelledby="hb">
+<h2 id="hb">Backup and transfer</h2>
+<p>Download a backup file to keep your data safe or to move it to another device.</p>
+<div class="row">
+<button type="button" id="bk-save">Download backup</button>
+<button type="button" class="alt" id="bk-share">Share backup</button>
+<div><label for="bk-load">Restore backup</label><input type="file" id="bk-load" accept="application/json,.json"></div>
+</div>
+<p id="bk-msg" class="msg" role="alert"></p>
+</section>
+<section id="glossary" aria-labelledby="hg">
+<h2 id="hg">Glossary</h2>
+<dl>
+<dt><dfn>Dose</dfn></dt><dd>One amount of a medicine, taken at one time.</dd>
+<dt><dfn>Strength</dfn></dt><dd>How much active ingredient is in one tablet or one measure.</dd>
+<dt><dfn>Prescriber</dfn></dt><dd>A health worker, such as a doctor, who is allowed to order medicine for you.</dd>
+<dt><dfn>Pharmacist</dfn></dt><dd>A trained expert who prepares and checks medicines.</dd>
+<dt><dfn>Interaction</dfn></dt><dd>A change in how one medicine works when you take it with another medicine.</dd>
+<dt><dfn>mg</dfn></dt><dd>Milligram. One thousandth of a gram.</dd>
+<dt><dfn>h</dfn></dt><dd>Hours. For example, 24 h means 24 hours.</dd>
+<dt><dfn>e.g.</dfn></dt><dd>For example.</dd>
+<dt><dfn>HH:MM</dfn></dt><dd>Hours, then minutes, in 24-hour time. For example, 14:30 is half past two in the afternoon.</dd>
+<dt><dfn>PDF</dfn></dt><dd>Portable Document Format. A file you can print or share.</dd>
+<dt><dfn>ICS</dfn></dt><dd>iCalendar. A file that adds events to a calendar app.</dd>
+</dl>
+</section>
+</main>
+<footer>
+<p id="disc"></p>
+<p><a class="btn" href="https://github.com/Ardalorn">Ardalorn on GitHub</a></p>
+</footer>
+<script src="vendor/jspdf.umd.min.js"></script>
+<script src="vendor/jspdf.plugin.autotable.min.js"></script>
+<script src="planner.js"></script>
+<script src="ics.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
