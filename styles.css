@@ -1,0 +1,60 @@
+@font-face{font-family:"Atkinson Hyperlegible";font-weight:400;font-display:swap;src:url(fonts/atkinson-hyperlegible-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"Atkinson Hyperlegible";font-weight:700;font-display:swap;src:url(fonts/atkinson-hyperlegible-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:Fraunces;font-weight:600;font-display:swap;src:url(fonts/fraunces-latin-600-normal.woff2) format("woff2")}
+:root{color-scheme:light;--ink:#17261f;--paper:#edf1ee;--card:#fbfdfb;--accent:#1b5541;--late:#8c2f39;--line:#c3cdc7;--s1:.5rem;--s2:1rem;--s3:1.5rem;--tap:2.75rem;--r:.5rem;--bw:.125rem;--flag:.5rem;--col:5rem;--page:60rem;--focus:.1875rem;--gap:.125rem;--msg-h:1.5rem}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--paper);color:var(--ink);font:1.125rem/1.5 "Atkinson Hyperlegible",Verdana,sans-serif}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;margin:0 0 var(--s2)}
+header,section,footer{max-width:var(--page);margin-inline:auto;padding:var(--s2)}
+nav ul{display:flex;flex-wrap:wrap;gap:var(--s2);list-style:none;margin:0;padding:0}
+a{color:var(--accent)}
+p{max-width:70ch}
+dl{margin:0}
+dt{font-weight:700;margin-block-start:var(--s1)}
+dd{margin:0}
+input::placeholder{color:#44504a;opacity:1}
+nav a{display:inline-flex;align-items:center;min-block-size:var(--tap)}
+:focus-visible{outline:var(--focus) solid var(--ink);outline-offset:var(--gap)}
+label{display:block;font-weight:700;margin-block:var(--s1) var(--gap)}
+input,select,button{font:inherit;min-height:var(--tap);padding:0 var(--s1);border:var(--bw) solid var(--ink);border-radius:var(--r);background:var(--card);color:var(--ink);max-width:100%}
+button{padding-inline:var(--s2);background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700;cursor:pointer}
+a.btn{display:inline-flex;align-items:center;min-height:var(--tap);padding:0 var(--s2);border:var(--bw) solid var(--ink);border-radius:var(--r);background:var(--card);color:var(--ink);font-weight:700;text-decoration:none}
+button.alt{background:var(--card);color:var(--ink);border-color:var(--ink)}
+.card{background:var(--card);border:var(--bw) solid var(--line);border-radius:var(--r);padding:var(--s2);margin-block:var(--s2)}
+.row{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:end}
+.row>div{min-inline-size:0}
+.msg{min-height:var(--msg-h)}
+.err{color:var(--late);font-weight:700}
+.err:not(:empty)::before{content:"! ";content:"! "/""}
+.skip-link{position:absolute;inset-block-start:-5rem;inset-inline-start:var(--s1);padding:var(--s1) var(--s2);background:var(--card);color:var(--ink);border:var(--bw) solid var(--ink);border-radius:var(--r);z-index:3}
+.skip-link:focus{inset-block-start:var(--s1)}
+main:focus{outline:none}
+nav a[aria-current]{text-decoration:none;border-block-end:var(--focus) solid var(--ink)}
+#day-long{font-weight:700;margin-block:var(--s1) var(--s2)}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+ol,ul.plain{list-style:none;margin:0;padding:0}
+#doses{container-type:inline-size}
+.dose{display:grid;gap:var(--s1);padding:var(--s2);border-bottom:var(--bw) solid var(--line);border-inline-start:var(--flag) solid transparent}
+.dose.late{border-inline-start-color:var(--late)}
+.dose.done{border-inline-start-color:var(--accent)}
+.late .st{color:var(--late)}
+.act{display:grid;gap:var(--s2);justify-items:start}
+.time{display:grid;gap:var(--s1);margin:0}
+/* Container sizes match Tailwind v4: 36rem = @xl, 48rem = @3xl. Custom properties cannot be used in @container conditions. */
+@container (width >= 36rem){.dose{grid-template-columns:var(--col) 1fr auto;align-items:center}}
+@container (width >= 48rem){.act,.time{display:flex;align-items:center;gap:var(--s2)}}
+table{border-collapse:collapse;width:100%}
+caption{font-weight:700;text-align:start;padding-block:var(--s1)}
+th,td{text-align:start;padding:var(--s1);border-bottom:var(--bw) solid var(--line);vertical-align:top}
+.scroll{overflow-x:auto}
+small{font-size:1rem}
+.dose.skip{border-inline-start-color:var(--ink)}
+/* Sticky header. Off in short windows (including 200% zoom) so it never takes the screen. --hdr is set by app.js so focus and anchor jumps stop below it. */
+@media (min-height:36rem){
+html{scroll-padding-block-start:var(--hdr,0px)}
+header{position:sticky;inset-block-start:0;z-index:2;background:var(--paper);border-block-end:var(--bw) solid var(--line);display:flex;flex-wrap:wrap;align-items:center;column-gap:var(--s3);padding-block:var(--s1)}
+header h1{margin:0}
+nav ul{row-gap:var(--s1)}
+}
+@media print{nav,form,button,select,.act,a.btn,#plan,#meds,#backup,#glossary,#extra{display:none}body:not(.print-ov) #overview{display:none}body.print-ov :is(header,#chart){display:none}}
