@@ -1,10 +1,10 @@
 // Network-first: online loads always revalidate, so edited files show up without bumping a version.
 // Offline (or network slower than the timeout) falls back to the cache.
-const CACHE = 'ArChart-v12', NETWORK_TIMEOUT_MS = 3000;
+const CACHE = 'ArChart-v14', NETWORK_TIMEOUT_MS = 3000;
 const SHELL = ['./', 'index.html', 'styles.css', 'planner.js', 'ics.js', 'app.js', 'manifest.webmanifest',
   'vendor/jspdf.umd.min.js', 'vendor/jspdf.plugin.autotable.min.js',
-  'fonts/atkinson-hyperlegible-latin-400-normal.woff2', 'fonts/atkinson-hyperlegible-latin-700-normal.woff2',
-  'fonts/fraunces-latin-600-normal.woff2', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
+  'fonts/AtkinsonHyperlegibleNext-Regular.woff2', 'fonts/AtkinsonHyperlegibleNext-Bold.woff2',
+  'fonts/Fraunces_72pt-SemiBold.woff', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
   'icons/icon-maskable-192.png', 'icons/icon-maskable-512.png', 'icons/icon-monochrome-192.png', 'icons/icon-monochrome-512.png',
   'icons/apple-touch-icon.png', 'icons/favicon.ico'];
 self.addEventListener('install', e => e.waitUntil(
